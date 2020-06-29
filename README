@@ -4,6 +4,7 @@ dwm is an extremely fast, small, and dynamic window manager for X.
 This is Anant's build of dwm and includes the following patches from the dwm
 website:
 
+- attachdirection
 - cyclelayouts
 - fullscreen
 - pertag
