@@ -96,7 +96,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_h,      tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_l,      tagmon,         {.i = +1 } },
   // Layouts
-	{ MODKEY,                       XK_f,      fullscreen,     {0} },
+	{ MODKEY,                       XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_space,  cyclelayout,    {.i = +1 } },
 	{ MODKEY|ShiftMask,	            XK_space,  cyclelayout,    {.i = -1 } },
   //{ MODKEY|ControlMask|ShfitMask, XK_space,  setlayout,      {0} },
