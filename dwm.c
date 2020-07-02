@@ -1658,8 +1658,8 @@ sendmon(Client *c, Monitor *m)
 			attach(c);
 	}
 	attachstack(c);
-	focus(NULL);
 	arrange(NULL);
+	focus(c);
 }
 
 void
