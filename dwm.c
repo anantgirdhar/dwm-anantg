@@ -2032,7 +2032,6 @@ tag(const Arg *arg)
 	if (selmon->sel && arg->ui & TAGMASK) {
 		selmon->sel->tags = arg->ui & TAGMASK;
 		focus(NULL);
-		arrange(selmon);
         const Arg arg2 = {.ui = arg->ui & TAGMASK};
         view(&arg2);
     }
