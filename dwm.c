@@ -2033,7 +2033,9 @@ tag(const Arg *arg)
 		selmon->sel->tags = arg->ui & TAGMASK;
 		focus(NULL);
 		arrange(selmon);
-	}
+        const Arg arg2 = {.ui = arg->ui & TAGMASK};
+        view(&arg2);
+    }
 }
 
 void

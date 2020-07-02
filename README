@@ -18,6 +18,7 @@ In addition to these patches, I've also added/changed the following features:
 
 - focus on tagmon: On moving a client to a new monitor, focus the client after
   the movie is complete.
+- focus on tag: On setting a client's tags, focus the client.
 
 # Requirements
 In order to build dwm you need the Xlib header files.
