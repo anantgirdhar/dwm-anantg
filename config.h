@@ -32,9 +32,12 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class            instance      title       tags mask     isfloating   monitor */
+	{ "Gimp",           NULL,         NULL,       0,            1,           -1 },
+	{ "Brave-browser",  NULL,         NULL,       1 << 8,       0,            0 },
+	{ "firefox",        NULL,         NULL,       1 << 8,       0,            0 },
+	{ "qutebrowser",    NULL,         NULL,       1,            0,            0 },
+	{ "St",             NULL,         "calcurse", 1 << 7,       0,            0 },
 };
 
 /* layout(s) */
