@@ -37,6 +37,7 @@ static const Rule rules[] = {
 	{ "Gimp",           NULL,         NULL,           0,            1,           0,            0,           -1 },
 	{ "Brave-browser",  NULL,         NULL,           1 << 8,       0,           0,            0,            0 },
 	{ "firefox",        NULL,         NULL,           1 << 8,       0,           0,            0,            0 },
+	{ "LibreWolf",      NULL,         NULL,           1 << 8,       0,           0             0,            0 },
 	{ "qutebrowser",    NULL,         NULL,           1,            0,           0,            0,            0 },
 	{ "St",             NULL,         "calcurse",     1 << 7,       0,           0,            1,            0 },
 	{ "St",             NULL,         NULL,           0 << 3,       0,           1,            0,           -1 },
@@ -123,7 +124,7 @@ static Key keys[] = {
 	//{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
   // System control
-	//{ MODKEY|ShiftMask,             XK_x,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_x,      quit,           {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_x,      quit,           {1} },
 };
 
