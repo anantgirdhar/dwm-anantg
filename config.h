@@ -121,7 +121,7 @@ static Key keys[] = {
 	//{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
   // System control
-	//{ MODKEY|ShiftMask,             XK_x,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_x,      quit,           {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_x,      quit,           {1} },
 };
 
