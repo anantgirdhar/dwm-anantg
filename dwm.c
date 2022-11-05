@@ -41,6 +41,8 @@
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
+#include <X11/Xlib-xcb.h>
+#include <xcb/res.h>
 
 #include "drw.h"
 #include "util.h"
@@ -109,9 +111,11 @@ struct Client {
   int basew, baseh, incw, inch, maxw, maxh, minw, minh;
   int bw, oldbw;
   unsigned int tags;
-  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+  int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, isterminal, noswallow;
+  pid_t pid;
   Client *next;
   Client *snext;
+  Client *swallowing;
   Monitor *mon;
   Window win;
 };
@@ -161,6 +165,8 @@ typedef struct {
   const char *title;
   unsigned int tags;
   int isfloating;
+  int isterminal;
+  int noswallow;
   int monitor;
 } Rule;
 
@@ -280,6 +286,12 @@ static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void xrdb(const Arg *arg);
 static void zoom(const Arg *arg);
 
+static pid_t getparentprocess(pid_t p);
+static int isdescprocess (pid_t p, pid_t c);
+static Client *swallowingclient(Window w);
+static Client *termforwin(const Client *c);
+static pid_t winpid(Window w);
+
 /* variables */
 static Client *prevzoom = NULL;
 static const char broken[] = "broken";
@@ -357,6 +369,8 @@ applyrules(Client *c)
     && (!r->class || strstr(class, r->class))
     && (!r->instance || strstr(instance, r->instance)))
     {
+      c->isterminal = r->isterminal;
+      c->noswallow = r->noswallow;
       c->isfloating = r->isfloating;
       c->tags |= r->tags;
       for (m = mons; m && m->num != r->monitor; m = m->next);
@@ -538,6 +552,53 @@ attachstack(Client *c)
 {
   c->snext = c->mon->stack;
   c->mon->stack = c;
+}
+
+void
+swallow(Client *p, Client *c)
+{
+
+  if (c->noswallow || c->isterminal)
+    return;
+  if (c->noswallow && !swallowfloating && c->isfloating)
+    return;
+
+  detach(c);
+  detachstack(c);
+
+  setclientstate(c, WithdrawnState);
+  XUnmapWindow(dpy, p->win);
+
+  p->swallowing = c;
+  c->mon = p->mon;
+
+  Window w = p->win;
+  p->win = c->win;
+  c->win = w;
+  updatetitle(p);
+  XMoveResizeWindow(dpy, p->win, p->x, p->y, p->w, p->h);
+  arrange(p->mon);
+  configure(p);
+  updateclientlist();
+}
+
+void
+unswallow(Client *c)
+{
+  c->win = c->swallowing->win;
+
+  free(c->swallowing);
+  c->swallowing = NULL;
+
+  /* unfullscreen the client */
+  setfullscreen(c, 0);
+  updatetitle(c);
+  arrange(c->mon);
+  XMapWindow(dpy, c->win);
+  XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
+  setclientstate(c, NormalState);
+  focus(NULL);
+  arrange(c->mon);
 }
 
 void
@@ -815,6 +876,9 @@ destroynotify(XEvent *e)
 
   if ((c = wintoclient(ev->window)))
     unmanage(c, 1);
+
+  else if ((c = swallowingclient(ev->window)))
+    unmanage(c->swallowing, 1);
 }
 
 void
@@ -1287,6 +1351,8 @@ manage(Window w, XWindowAttributes *wa)
   c->mon->sel = c;
   arrange(c->mon);
   XMapWindow(dpy, c->win);
+  if (term)
+    swallow(term, c);
   focus(NULL);
 }
 
@@ -2180,6 +2246,20 @@ unmanage(Client *c, int destroyed)
   Monitor *m = c->mon;
   XWindowChanges wc;
 
+  if (c->swallowing) {
+    unswallow(c);
+    return;
+  }
+
+  Client *s = swallowingclient(c->win);
+  if (s) {
+    free(s->swallowing);
+    s->swallowing = NULL;
+    arrange(m);
+    focus(NULL);
+    return;
+  }
+
   detach(c);
   detachstack(c);
   if (!destroyed) {
@@ -2585,6 +2665,22 @@ termforwin(const Client *w)
 	for (m = mons; m; m = m->next) {
 		for (c = m->clients; c; c = c->next) {
 			if (c->isterminal && !c->swallowing && c->pid && isdescprocess(c->pid, w->pid))
+				return c;
+		}
+	}
+
+	return NULL;
+}
+
+Client *
+swallowingclient(Window w)
+{
+	Client *c;
+	Monitor *m;
+
+	for (m = mons; m; m = m->next) {
+		for (c = m->clients; c; c = c->next) {
+			if (c->swallowing && c->swallowing->win == w)
 				return c;
 		}
 	}

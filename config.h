@@ -3,6 +3,7 @@
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
+static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const unsigned int gappih    = 13;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 13;       /* vert inner gap between windows */
 static const unsigned int gappoh    = 13;       /* horiz outer gap between windows and screen edge */
@@ -32,12 +33,14 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class            instance      title       tags mask     isfloating   monitor */
-	{ "Gimp",           NULL,         NULL,       0,            1,           -1 },
-	{ "Brave-browser",  NULL,         NULL,       1 << 8,       0,            0 },
-	{ "firefox",        NULL,         NULL,       1 << 8,       0,            0 },
-	{ "qutebrowser",    NULL,         NULL,       1,            0,            0 },
-	{ "St",             NULL,         "calcurse", 1 << 7,       0,            0 },
+	/* class            instance      title           tags mask     isfloating   isterminal    noswallow    monitor */
+	{ "Gimp",           NULL,         NULL,           0,            1,           0,            0,           -1 },
+	{ "Brave-browser",  NULL,         NULL,           1 << 8,       0,           0,            0,            0 },
+	{ "firefox",        NULL,         NULL,           1 << 8,       0,           0,            0,            0 },
+	{ "qutebrowser",    NULL,         NULL,           1,            0,           0,            0,            0 },
+	{ "St",             NULL,         "calcurse",     1 << 7,       0,           0,            1,            0 },
+	{ "St",             NULL,         NULL,           0 << 3,       0,           1,            0,           -1 },
+	/* { NULL,             NULL,         "Event Tester", 1 << 7,       0,           0,            0,           -1 },  /1* xev *1/ */
 };
 
 /* layout(s) */
