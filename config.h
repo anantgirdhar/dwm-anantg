@@ -37,7 +37,7 @@ static const Rule rules[] = {
 	{ "Gimp",           NULL,         NULL,           0,            1,           0,            0,           -1 },
 	{ "Brave-browser",  NULL,         NULL,           1 << 8,       0,           0,            0,            0 },
 	{ "firefox",        NULL,         NULL,           1 << 8,       0,           0,            0,            0 },
-	{ "LibreWolf",      NULL,         NULL,           1 << 8,       0,           0             0,            0 },
+	{ "LibreWolf",      NULL,         NULL,           1 << 8,       0,           0,            0,            0 },
 	{ "qutebrowser",    NULL,         NULL,           1,            0,           0,            0,            0 },
 	{ "St",             NULL,         "calcurse",     1 << 7,       0,           0,            1,            0 },
 	{ "St",             NULL,         NULL,           0 << 3,       0,           1,            0,           -1 },
